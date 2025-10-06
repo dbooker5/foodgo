@@ -1,6 +1,5 @@
 import 'package:flutter/material.dart';
 import 'package:foodgo/pages/home.dart';
-import 'package:foodgo/pages/onboarding.dart';
 
 void main() {
   runApp(const MyApp());
