@@ -5,8 +5,14 @@ class AppWidget{
   static TextStyle HeadLineTextFieldStyle(){
     return TextStyle(
       color: Colors.black,
-      fontSize: 25,
+      fontSize: 30,
       fontWeight: FontWeight.bold
+    );
+  }
+  static TextStyle SimpleTextFieldStyle(){
+    return TextStyle(
+        color: Colors.black,
+        fontSize: 18,
     );
   }
 }
