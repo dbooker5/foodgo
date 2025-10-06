@@ -14,12 +14,44 @@ class _OnboardingState extends State<Onboarding> {
   Widget build(BuildContext context) {
     return Scaffold(
       backgroundColor: Colors.white,
-      body: Container(child: Column(children: [
-        Image.asset(
-            'images/onboard.png'
+      body: Container(
+        margin: EdgeInsets.only(top: 40),
+        child: Column(
+          children: [
+            Image.asset(
+              "images/onboard.png"
+            ),
+            SizedBox(height: 20,),
+            Text(
+              "The Fastest\n Food Delivery",
+              textAlign: TextAlign.center,
+              style: AppWidget.HeadLineTextFieldStyle()
+            ),
+            SizedBox(height: 20,),
+            Text("Craving something delicious?\n Order now and get your favourite food\n delivered fast!",
+              textAlign: TextAlign.center,
+              style: AppWidget.SimpleTextFieldStyle(),
+            ),
+            SizedBox(height: 20,),
+            Container(
+              height: 60,
+              width: MediaQuery.of(context).size.width/2,
+              decoration: BoxDecoration(
+                  color: Color(0xff8c592a),
+                  borderRadius: BorderRadius.circular(20),
+              ),
+              child: Center(
+                child: Text(
+                    "Get Started",
+                    style: TextStyle(
+                        color: Colors.white,
+                        fontSize: 20,
+                        fontWeight: FontWeight.bold),
+                ),
+              ),
+            )
+         ],
         ),
-        Text("The Fastest\n Food Delivery", style: AppWidget.HeadLineTextFieldStyle(),)
-      ],)
       )
     );
   }
