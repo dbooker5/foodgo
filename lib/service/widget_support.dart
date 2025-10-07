@@ -9,10 +9,18 @@ class AppWidget{
       fontWeight: FontWeight.bold
     );
   }
-  static TextStyle SimpleTextFieldStyle(){
+  static TextStyle SimpleTextFieldStyle() {
     return TextStyle(
-        color: Colors.black,
-        fontSize: 18,
+      color: Colors.black,
+      fontSize: 18,
     );
+
+  }
+    static TextStyle whiteTextFieldStyle(){
+      return TextStyle(
+        color: Colors.white,
+        fontSize: 18,
+        fontWeight: FontWeight.bold
+      );
   }
 }
