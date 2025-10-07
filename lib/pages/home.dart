@@ -104,8 +104,8 @@ class _HomeState extends State<Home> {
                 itemCount: categories.length,
                 itemBuilder: (context, index){
                   return CategoryTile(
-                      image: categories[index].image!,
-                      name: categories[index].name!,
+                      image: categories[index].image,
+                      name: categories[index].name,
                       categoryindex: index.toString(),
                   );
                 }
