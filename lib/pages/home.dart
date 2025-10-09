@@ -1,7 +1,9 @@
 import 'package:flutter/material.dart';
 import 'package:foodgo/model/category_model.dart';
 import 'package:foodgo/service/widget_support.dart';
+import '../model/pizza_model.dart';
 import '../service/category_data.dart';
+import '../service/pizza_data.dart';
 
 class Home extends StatefulWidget {
   const Home({super.key});
@@ -12,11 +14,13 @@ class Home extends StatefulWidget {
 
 class _HomeState extends State<Home> {
   List<CategoryModel> categories = [];
+  List<PizzaModel> pizza = [];
   String track = "0";
 
   @override
   void initState() {
     categories = getCategories();
+    pizza = getPizza();
     super.initState();
   }
 
@@ -96,7 +100,7 @@ class _HomeState extends State<Home> {
               ],
             ),
             SizedBox(height: 20,),
-            SizedBox(
+            Container(
               height: 70,
               child: ListView.builder(
                 shrinkWrap: true,
@@ -110,9 +114,81 @@ class _HomeState extends State<Home> {
                   );
                 }
               ),
-            )
+            ),
+            SizedBox(height: 10,),
+            Expanded(
+              child: Container(
+                margin: EdgeInsets.only(right: 10),
+                child: GridView.builder(
+                  padding: EdgeInsets.zero,
+                      gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(
+                          crossAxisCount: 2,
+                          childAspectRatio: 0.69,
+                          mainAxisSpacing: 20,
+                          crossAxisSpacing: 15),
+                      itemCount: pizza.length,
+                      itemBuilder: (context, index){
+                        return PizzaTile(
+                            pizza[index].image!,
+                            pizza[index].name!,
+                            pizza[index].price!);
+                      }),
+              ),
+            ),
           ],
         ),
+      ),
+    );
+  }
+
+  Widget PizzaTile(String image, String name, String price){
+    return Container(
+      margin: EdgeInsets.only(right: 20),
+      padding: EdgeInsets.only(left: 10, top: 10),
+      decoration: BoxDecoration(
+        border: Border.all(color: Colors.grey),
+        borderRadius: BorderRadius.circular(20),
+        color: Colors.white,
+      ),
+      child: Column(
+        crossAxisAlignment: CrossAxisAlignment.start,
+        children: [
+        Center(
+          child: Image.asset(
+                image,
+                height: 150,
+                width: 150,
+                fit: BoxFit.contain,
+            ),
+        ),
+          Text(
+            name,
+            style: AppWidget.boldTextFieldStyle(),
+          ),
+          Text(
+            "\$" + price,
+            style: AppWidget.priceTextFieldStyle(),
+          ),
+          Spacer(),
+          Row(
+            mainAxisAlignment: MainAxisAlignment.end,
+            children: [
+              Container(
+                height: 50,
+                width: 80,
+                decoration: BoxDecoration(
+                  color: Color(0xffef2b39),
+                  borderRadius: BorderRadius.only(topLeft: Radius.circular(20), bottomRight: Radius.circular(20)),
+                ),
+                child: Icon(
+                    Icons.arrow_forward,
+                    color: Colors.white,
+                    size: 30,
+                ),
+              ),
+            ],
+          )
+        ],
       ),
     );
   }
