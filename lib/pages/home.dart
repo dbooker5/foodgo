@@ -1,6 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:foodgo/model/category_model.dart';
+import 'package:foodgo/service/burger_data.dart';
 import 'package:foodgo/service/widget_support.dart';
+import '../model/burger_model.dart';
 import '../model/pizza_model.dart';
 import '../service/category_data.dart';
 import '../service/pizza_data.dart';
@@ -15,12 +17,14 @@ class Home extends StatefulWidget {
 class _HomeState extends State<Home> {
   List<CategoryModel> categories = [];
   List<PizzaModel> pizza = [];
+  List<BurgerModel> burger = [];
   String track = "0";
 
   @override
   void initState() {
     categories = getCategories();
     pizza = getPizza();
+    burger = getBurger();
     super.initState();
   }
 
@@ -116,7 +120,7 @@ class _HomeState extends State<Home> {
               ),
             ),
             SizedBox(height: 10,),
-            Expanded(
+            track == "0"? Expanded(
               child: Container(
                 margin: EdgeInsets.only(right: 10),
                 child: GridView.builder(
@@ -128,20 +132,38 @@ class _HomeState extends State<Home> {
                           crossAxisSpacing: 15),
                       itemCount: pizza.length,
                       itemBuilder: (context, index){
-                        return PizzaTile(
+                        return FoodTile(
                             pizza[index].image!,
                             pizza[index].name!,
                             pizza[index].price!);
                       }),
               ),
-            ),
+            ):track == "1"? Expanded(
+              child: Container(
+                margin: EdgeInsets.only(right: 10),
+                child: GridView.builder(
+                    padding: EdgeInsets.zero,
+                    gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(
+                        crossAxisCount: 2,
+                        childAspectRatio: 0.69,
+                        mainAxisSpacing: 20,
+                        crossAxisSpacing: 15),
+                    itemCount: burger.length,
+                    itemBuilder: (context, index){
+                      return FoodTile(
+                          burger[index].image!,
+                          burger[index].name!,
+                          burger[index].price!);
+                    }),
+              ),
+            ): Container()// add chinese and Mexican models/data
           ],
         ),
       ),
     );
   }
 
-  Widget PizzaTile(String image, String name, String price){
+  Widget FoodTile(String image, String name, String price){
     return Container(
       margin: EdgeInsets.only(right: 20),
       padding: EdgeInsets.only(left: 10, top: 10),
