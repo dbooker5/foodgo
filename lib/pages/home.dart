@@ -3,8 +3,12 @@ import 'package:foodgo/model/category_model.dart';
 import 'package:foodgo/service/burger_data.dart';
 import 'package:foodgo/service/widget_support.dart';
 import '../model/burger_model.dart';
+import '../model/chinese_model.dart';
+import '../model/mexican_model.dart';
 import '../model/pizza_model.dart';
 import '../service/category_data.dart';
+import '../service/chinese_data.dart';
+import '../service/mexican_data.dart';
 import '../service/pizza_data.dart';
 
 class Home extends StatefulWidget {
@@ -18,6 +22,8 @@ class _HomeState extends State<Home> {
   List<CategoryModel> categories = [];
   List<PizzaModel> pizza = [];
   List<BurgerModel> burger = [];
+  List<ChineseModel> chinese = [];
+  List<MexicanModel> mexican = [];
   String track = "0";
 
   @override
@@ -25,6 +31,8 @@ class _HomeState extends State<Home> {
     categories = getCategories();
     pizza = getPizza();
     burger = getBurger();
+    chinese = getChinese();
+    mexican = getMexican();
     super.initState();
   }
 
@@ -104,7 +112,7 @@ class _HomeState extends State<Home> {
               ],
             ),
             SizedBox(height: 20,),
-            Container(
+            SizedBox(
               height: 70,
               child: ListView.builder(
                 shrinkWrap: true,
@@ -120,6 +128,7 @@ class _HomeState extends State<Home> {
               ),
             ),
             SizedBox(height: 10,),
+            //Pizza Selection
             track == "0"? Expanded(
               child: Container(
                 margin: EdgeInsets.only(right: 10),
@@ -138,6 +147,7 @@ class _HomeState extends State<Home> {
                             pizza[index].price!);
                       }),
               ),
+              // Burger Selection
             ):track == "1"? Expanded(
               child: Container(
                 margin: EdgeInsets.only(right: 10),
@@ -156,7 +166,45 @@ class _HomeState extends State<Home> {
                           burger[index].price!);
                     }),
               ),
-            ): Container()// add chinese and Mexican models/data
+              //Chinese Selection
+            ):track == "2"? Expanded(
+              child: Container(
+                margin: EdgeInsets.only(right: 10),
+                child: GridView.builder(
+                    padding: EdgeInsets.zero,
+                    gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(
+                        crossAxisCount: 2,
+                        childAspectRatio: 0.69,
+                        mainAxisSpacing: 20,
+                        crossAxisSpacing: 15),
+                    itemCount: chinese.length,
+                    itemBuilder: (context, index){
+                      return FoodTile(
+                          chinese[index].image!,
+                          chinese[index].name!,
+                          chinese[index].price!);
+                    }),
+              ),
+              //Mexican Selection
+            ):track == "3"? Expanded(
+              child: Container(
+                margin: EdgeInsets.only(right: 10),
+                child: GridView.builder(
+                    padding: EdgeInsets.zero,
+                    gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(
+                        crossAxisCount: 2,
+                        childAspectRatio: 0.69,
+                        mainAxisSpacing: 20,
+                        crossAxisSpacing: 15),
+                    itemCount: mexican.length,
+                    itemBuilder: (context, index){
+                      return FoodTile(
+                          mexican[index].image!,
+                          mexican[index].name!,
+                          mexican[index].price!);
+                    }),
+              ),
+            ): Container(),
           ],
         ),
       ),
@@ -188,7 +236,7 @@ class _HomeState extends State<Home> {
             style: AppWidget.boldTextFieldStyle(),
           ),
           Text(
-            "\$" + price,
+            "\$$price",
             style: AppWidget.priceTextFieldStyle(),
           ),
           Spacer(),
