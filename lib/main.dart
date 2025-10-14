@@ -1,7 +1,5 @@
 import 'package:flutter/material.dart';
 import 'package:foodgo/pages/bottomnav.dart';
-import 'package:foodgo/pages/detail_page.dart';
-import 'package:foodgo/pages/home.dart';
 
 void main() {
   runApp(const MyApp());
