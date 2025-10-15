@@ -1,6 +1,6 @@
 import '../model/mexican_model.dart';
 
-List<MexicanModel> getMexican(){
+List<MexicanModel> getMexican() {
   List<MexicanModel> mexican = [];
   MexicanModel mexicanModel = MexicanModel();
 

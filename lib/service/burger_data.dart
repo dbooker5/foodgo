@@ -1,6 +1,6 @@
 import '../model/burger_model.dart';
 
-List<BurgerModel> getBurger(){
+List<BurgerModel> getBurger() {
   List<BurgerModel> burger = [];
   BurgerModel burgerModel = BurgerModel();
 

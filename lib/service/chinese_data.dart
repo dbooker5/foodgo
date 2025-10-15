@@ -1,6 +1,6 @@
 import '../model/chinese_model.dart';
 
-List<ChineseModel> getChinese(){
+List<ChineseModel> getChinese() {
   List<ChineseModel> chinese = [];
   ChineseModel chineseModel = ChineseModel();
 

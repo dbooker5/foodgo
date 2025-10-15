@@ -18,41 +18,41 @@ class _OnboardingState extends State<Onboarding> {
         margin: EdgeInsets.only(top: 40),
         child: Column(
           children: [
-            Image.asset(
-              "images/onboard.png"
-            ),
-            SizedBox(height: 20,),
+            Image.asset("images/onboard.png"),
+            SizedBox(height: 20),
             Text(
               "The Fastest\n Food Delivery",
               textAlign: TextAlign.center,
-              style: AppWidget.HeadLineTextFieldStyle()
+              style: AppWidget.HeadLineTextFieldStyle(),
             ),
-            SizedBox(height: 20,),
-            Text("Craving something delicious?\n Order now and get your favourite food\n delivered fast!",
+            SizedBox(height: 20),
+            Text(
+              "Craving something delicious?\n Order now and get your favourite food\n delivered fast!",
               textAlign: TextAlign.center,
               style: AppWidget.SimpleTextFieldStyle(),
             ),
-            SizedBox(height: 20,),
+            SizedBox(height: 20),
             Container(
               height: 60,
-              width: MediaQuery.of(context).size.width/2,
+              width: MediaQuery.of(context).size.width / 2,
               decoration: BoxDecoration(
-                  color: Color(0xff8c592a),
-                  borderRadius: BorderRadius.circular(20),
+                color: Color(0xff8c592a),
+                borderRadius: BorderRadius.circular(20),
               ),
               child: Center(
                 child: Text(
-                    "Get Started",
-                    style: TextStyle(
-                        color: Colors.white,
-                        fontSize: 20,
-                        fontWeight: FontWeight.bold),
+                  "Get Started",
+                  style: TextStyle(
+                    color: Colors.white,
+                    fontSize: 20,
+                    fontWeight: FontWeight.bold,
+                  ),
                 ),
               ),
-            )
-         ],
+            ),
+          ],
         ),
-      )
+      ),
     );
   }
 }

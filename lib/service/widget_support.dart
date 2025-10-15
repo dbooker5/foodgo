@@ -1,28 +1,24 @@
 import 'package:flutter/material.dart';
 
-class AppWidget{
-
-  static TextStyle HeadLineTextFieldStyle(){
+class AppWidget {
+  static TextStyle HeadLineTextFieldStyle() {
     return TextStyle(
       color: Colors.black,
       fontSize: 30,
-      fontWeight: FontWeight.bold
+      fontWeight: FontWeight.bold,
     );
   }
 
   static TextStyle SimpleTextFieldStyle() {
-    return TextStyle(
-      color: Colors.black,
-      fontSize: 18,
-    );
+    return TextStyle(color: Colors.black, fontSize: 18);
   }
 
-    static TextStyle whiteTextFieldStyle(){
-      return TextStyle(
-        color: Colors.white,
-        fontSize: 18,
-        fontWeight: FontWeight.bold
-      );
+  static TextStyle whiteTextFieldStyle() {
+    return TextStyle(
+      color: Colors.white,
+      fontSize: 18,
+      fontWeight: FontWeight.bold,
+    );
   }
 
   static TextStyle boldTextFieldStyle() {
@@ -41,11 +37,11 @@ class AppWidget{
     );
   }
 
-  static TextStyle boldwhiteTextFieldStyle(){
+  static TextStyle boldwhiteTextFieldStyle() {
     return TextStyle(
-        color: Colors.white,
-        fontSize: 28,
-        fontWeight: FontWeight.bold
+      color: Colors.white,
+      fontSize: 28,
+      fontWeight: FontWeight.bold,
     );
   }
 }

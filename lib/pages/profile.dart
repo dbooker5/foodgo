@@ -9,10 +9,7 @@ class Profile extends StatelessWidget {
     return Scaffold(
       backgroundColor: Colors.white,
       appBar: AppBar(
-        title: Text(
-          "My Profile",
-          style: AppWidget.boldTextFieldStyle(),
-        ),
+        title: Text("My Profile", style: AppWidget.boldTextFieldStyle()),
         backgroundColor: Colors.white,
         centerTitle: true,
         elevation: 0,
@@ -27,15 +24,9 @@ class Profile extends StatelessWidget {
               backgroundImage: AssetImage("images/boy.jpg"),
             ),
             SizedBox(height: 20),
-            Text(
-              "Booker",
-              style: AppWidget.boldTextFieldStyle(),
-            ),
+            Text("Booker", style: AppWidget.boldTextFieldStyle()),
             SizedBox(height: 10),
-            Text(
-              "booker@example.com",
-              style: AppWidget.SimpleTextFieldStyle(),
-            ),
+            Text("booker@example.com", style: AppWidget.SimpleTextFieldStyle()),
             SizedBox(height: 30),
             ListTile(
               leading: Icon(Icons.settings),

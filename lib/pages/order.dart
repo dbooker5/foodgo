@@ -9,10 +9,7 @@ class Order extends StatelessWidget {
     return Scaffold(
       backgroundColor: Colors.white,
       appBar: AppBar(
-        title: Text(
-          "Your Orders",
-          style: AppWidget.boldTextFieldStyle(),
-        ),
+        title: Text("Your Orders", style: AppWidget.boldTextFieldStyle()),
         backgroundColor: Colors.white,
         centerTitle: true,
         elevation: 0,

@@ -9,10 +9,7 @@ class Wallet extends StatelessWidget {
     return Scaffold(
       backgroundColor: Colors.white,
       appBar: AppBar(
-        title: Text(
-          "My Wallet",
-          style: AppWidget.boldTextFieldStyle(),
-        ),
+        title: Text("My Wallet", style: AppWidget.boldTextFieldStyle()),
         backgroundColor: Colors.white,
         centerTitle: true,
         elevation: 0,
@@ -23,10 +20,7 @@ class Wallet extends StatelessWidget {
           children: [
             Icon(Icons.account_balance_wallet, size: 80, color: Colors.grey),
             SizedBox(height: 20),
-            Text(
-              "Balance: \$ 0.00",
-              style: AppWidget.SimpleTextFieldStyle(),
-            ),
+            Text("Balance: \$ 0.00", style: AppWidget.SimpleTextFieldStyle()),
           ],
         ),
       ),
