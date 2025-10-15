@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:foodgo/pages/bottomnav.dart';
+import 'package:foodgo/pages/signup.dart';
 
 void main() {
   runApp(const MyApp());
@@ -32,7 +33,7 @@ class MyApp extends StatelessWidget {
         // tested with just a hot reload.
         colorScheme: ColorScheme.fromSeed(seedColor: Colors.deepPurple),
       ),
-      home: BottomNav(),
+      home: SignUp(),
     );
   }
 }
