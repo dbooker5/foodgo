@@ -60,20 +60,94 @@ class _SignUpState extends State<SignUp> {
                     color: Colors.white,
                     borderRadius: BorderRadius.circular(20),
                   ),
-                  height: MediaQuery.of(context).size.height / 1.8,
+                  height: MediaQuery.of(context).size.height / 1.65,
                   child: Column(
                     crossAxisAlignment: CrossAxisAlignment.start,
                     children: [
                       SizedBox(height: 20),
                       Center(
                         child: Text(
-                          "Sign Up",
+                          "SignUp",
                           style: AppWidget.HeadLineTextFieldStyle(),
                         ),
                       ),
+                      SizedBox(height: 30),
+                      Text("Name", style: AppWidget.SignUpTextFieldStyle()),
+                      SizedBox(height: 5),
+                      Container(
+                        decoration: BoxDecoration(
+                          color: Color(0xFFececf8),
+                          borderRadius: BorderRadius.circular(10),
+                        ),
+                        child: TextField(
+                          decoration: InputDecoration(
+                            border: InputBorder.none,
+                            hintText: "Enter Name",
+                            prefixIcon: Icon(Icons.person_outline),
+                          ),
+                        ),
+                      ),
                       SizedBox(height: 20),
-                      Text("Name", style: AppWidget.priceTextFieldStyle()),
-                      Container(child: TextField()),
+                      Text("Email", style: AppWidget.SignUpTextFieldStyle()),
+                      SizedBox(height: 5),
+                      Container(
+                        decoration: BoxDecoration(
+                          color: Color(0xFFececf8),
+                          borderRadius: BorderRadius.circular(10),
+                        ),
+                        child: TextField(
+                          decoration: InputDecoration(
+                            border: InputBorder.none,
+                            hintText: "Enter Email",
+                            prefixIcon: Icon(Icons.mail_outlined),
+                          ),
+                        ),
+                      ),
+                      SizedBox(height: 20),
+                      Text("Password", style: AppWidget.priceTextFieldStyle()),
+                      SizedBox(height: 5),
+                      Container(
+                        decoration: BoxDecoration(
+                          color: Color(0xFFececf8),
+                          borderRadius: BorderRadius.circular(10),
+                        ),
+                        child: TextField(
+                          decoration: InputDecoration(
+                            border: InputBorder.none,
+                            hintText: "Enter Password",
+                            prefixIcon: Icon(Icons.password_outlined),
+                          ),
+                        ),
+                      ),
+                      SizedBox(height: 20),
+                      Center(
+                        child: Container(
+                          height: 60,
+                          width: 200,
+                          decoration: BoxDecoration(
+                            color: Color(0xffef2b39),
+                            borderRadius: BorderRadius.circular(30),
+                          ),
+                          child: Center(
+                            child: Text(
+                              "Sign Up",
+                              style: AppWidget.boldwhiteTextFieldStyle(),
+                            ),
+                          ),
+                        ),
+                      ),
+                      SizedBox(height: 30),
+                      Row(
+                        mainAxisAlignment: MainAxisAlignment.center,
+                        children: [
+                          Text(
+                            "Already have an account?",
+                            style: AppWidget.SimpleTextFieldStyle(),
+                          ),
+                          SizedBox(width: 10),
+                          Text("LogIn", style: AppWidget.boldTextFieldStyle()),
+                        ],
+                      ),
                     ],
                   ),
                 ),
