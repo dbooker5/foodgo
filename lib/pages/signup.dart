@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 
 import '../service/widget_support.dart';
+import 'login.dart';
 
 class SignUp extends StatefulWidget {
   const SignUp({super.key});
@@ -145,7 +146,20 @@ class _SignUpState extends State<SignUp> {
                             style: AppWidget.SimpleTextFieldStyle(),
                           ),
                           SizedBox(width: 10),
-                          Text("LogIn", style: AppWidget.boldTextFieldStyle()),
+                          GestureDetector(
+                            onTap: () {
+                              Navigator.push(
+                                context,
+                                MaterialPageRoute(
+                                  builder: (context) => LogIn(),
+                                ),
+                              );
+                            },
+                            child: Text(
+                              "LogIn",
+                              style: AppWidget.boldTextFieldStyle(),
+                            ),
+                          ),
                         ],
                       ),
                     ],
