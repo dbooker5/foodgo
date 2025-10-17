@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:foodgo/pages/signup.dart';
 
 import '../service/widget_support.dart';
 
@@ -142,6 +143,14 @@ class _LogInState extends State<LogIn> {
                           ),
                           SizedBox(width: 10),
                           GestureDetector(
+                            onTap: () {
+                              Navigator.push(
+                                context,
+                                MaterialPageRoute(
+                                  builder: (context) => SignUp(),
+                                ),
+                              );
+                            },
                             child: Text(
                               "SignUp",
                               style: AppWidget.boldTextFieldStyle(),
