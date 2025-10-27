@@ -1,4 +1,8 @@
+import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
+import 'package:foodgo/service/database.dart';
+import 'package:foodgo/service/shared_pref.dart';
+import 'package:random_string/random_string.dart';
 
 import '../service/widget_support.dart';
 import 'login.dart';
@@ -11,17 +15,99 @@ class SignUp extends StatefulWidget {
 }
 
 class _SignUpState extends State<SignUp> {
+  // Controllers
+  final TextEditingController nameController = TextEditingController();
+  final TextEditingController mailController = TextEditingController();
+  final TextEditingController passwordController = TextEditingController();
+
+  bool isLoading = false; // For showing loading indicator
+
+  // Register user method
+  Future<void> registration() async {
+    String email = mailController.text.trim();
+    String password = passwordController.text.trim();
+    String name = nameController.text.trim();
+
+    if (email.isEmpty || password.isEmpty || name.isEmpty) {
+      ScaffoldMessenger.of(context).showSnackBar(
+        const SnackBar(
+          backgroundColor: Colors.orangeAccent,
+          content: Text(
+            "Please fill in all fields",
+            style: TextStyle(fontSize: 18),
+          ),
+        ),
+      );
+      return;
+    }
+
+    try {
+      await FirebaseAuth.instance.createUserWithEmailAndPassword(
+        email: email,
+        password: password,
+      );
+
+      String id = randomAlphaNumeric(10);
+
+      Map<String, dynamic> userInfoMap = {
+        "Name": name,
+        "Email": email,
+        "Id": id,
+      };
+
+      // Save to SharedPreferences & Firestore in parallel
+      await Future.wait([
+        SharedPreferencesHelper().saveUserEmail(email),
+        SharedPreferencesHelper().saveUserName(name),
+        DatabaseMethods().addUserDetails(userInfoMap, id),
+      ]);
+
+      ScaffoldMessenger.of(context).showSnackBar(
+        const SnackBar(
+          backgroundColor: Colors.green,
+          content: Text(
+            "Account created successfully!",
+            style: TextStyle(fontSize: 18),
+          ),
+        ),
+      );
+
+      // Navigate to login screen
+      Navigator.pushReplacement(
+        context,
+        MaterialPageRoute(builder: (context) => const LogIn()),
+      );
+    } on FirebaseAuthException catch (e) {
+      String errorMessage = "An error occurred. Please try again.";
+      if (e.code == 'weak-password') {
+        errorMessage = "Password provided is too weak.";
+      } else if (e.code == 'email-already-in-use') {
+        errorMessage = "The account already exists for that email.";
+      } else if (e.message != null) {
+        errorMessage = e.message!;
+      }
+
+      ScaffoldMessenger.of(context).showSnackBar(
+        SnackBar(
+          backgroundColor: Colors.redAccent,
+          content: Text(errorMessage, style: const TextStyle(fontSize: 18)),
+        ),
+      );
+    }
+  }
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      body: Container(
+      body: SingleChildScrollView(
         child: Stack(
           children: [
+            // === Top Banner ===
             Container(
               height: MediaQuery.of(context).size.height / 2,
-              padding: EdgeInsets.only(top: 30),
+              padding: const EdgeInsets.only(top: 30),
               width: MediaQuery.of(context).size.width,
-              decoration: BoxDecoration(
+              decoration: const BoxDecoration(
                 color: Color(0xffffefbf),
                 borderRadius: BorderRadius.only(
                   bottomLeft: Radius.circular(40),
@@ -45,6 +131,8 @@ class _SignUpState extends State<SignUp> {
                 ],
               ),
             ),
+
+            // === Sign Up Form ===
             Container(
               margin: EdgeInsets.only(
                 top: MediaQuery.of(context).size.height / 2.5,
@@ -55,8 +143,7 @@ class _SignUpState extends State<SignUp> {
                 elevation: 3,
                 borderRadius: BorderRadius.circular(20),
                 child: Container(
-                  padding: EdgeInsets.only(left: 20, right: 20),
-                  width: MediaQuery.of(context).size.width,
+                  padding: const EdgeInsets.symmetric(horizontal: 20),
                   decoration: BoxDecoration(
                     color: Colors.white,
                     borderRadius: BorderRadius.circular(20),
@@ -65,79 +152,83 @@ class _SignUpState extends State<SignUp> {
                   child: Column(
                     crossAxisAlignment: CrossAxisAlignment.start,
                     children: [
-                      SizedBox(height: 20),
+                      const SizedBox(height: 20),
                       Center(
                         child: Text(
-                          "SignUp",
+                          "Sign Up",
                           style: AppWidget.HeadLineTextFieldStyle(),
                         ),
                       ),
-                      SizedBox(height: 30),
+                      const SizedBox(height: 30),
+
+                      // === Name Field ===
                       Text("Name", style: AppWidget.SignUpTextFieldStyle()),
-                      SizedBox(height: 5),
-                      Container(
-                        decoration: BoxDecoration(
-                          color: Color(0xFFececf8),
-                          borderRadius: BorderRadius.circular(10),
-                        ),
-                        child: TextField(
-                          decoration: InputDecoration(
-                            border: InputBorder.none,
-                            hintText: "Enter Name",
-                            prefixIcon: Icon(Icons.person_outline),
-                          ),
-                        ),
+                      const SizedBox(height: 5),
+                      _buildTextField(
+                        controller: nameController,
+                        hint: "Enter Name",
+                        icon: Icons.person_outline,
                       ),
-                      SizedBox(height: 20),
+                      const SizedBox(height: 20),
+
+                      // === Email Field ===
                       Text("Email", style: AppWidget.SignUpTextFieldStyle()),
-                      SizedBox(height: 5),
-                      Container(
-                        decoration: BoxDecoration(
-                          color: Color(0xFFececf8),
-                          borderRadius: BorderRadius.circular(10),
-                        ),
-                        child: TextField(
-                          decoration: InputDecoration(
-                            border: InputBorder.none,
-                            hintText: "Enter Email",
-                            prefixIcon: Icon(Icons.mail_outlined),
-                          ),
-                        ),
+                      const SizedBox(height: 5),
+                      _buildTextField(
+                        controller: mailController,
+                        hint: "Enter Email",
+                        icon: Icons.mail_outline,
                       ),
-                      SizedBox(height: 20),
+                      const SizedBox(height: 20),
+
+                      // === Password Field ===
                       Text("Password", style: AppWidget.priceTextFieldStyle()),
-                      SizedBox(height: 5),
-                      Container(
-                        decoration: BoxDecoration(
-                          color: Color(0xFFececf8),
-                          borderRadius: BorderRadius.circular(10),
-                        ),
-                        child: TextField(
-                          decoration: InputDecoration(
-                            border: InputBorder.none,
-                            hintText: "Enter Password",
-                            prefixIcon: Icon(Icons.password_outlined),
-                          ),
-                        ),
+                      const SizedBox(height: 5),
+                      _buildTextField(
+                        controller: passwordController,
+                        hint: "Enter Password",
+                        icon: Icons.lock_outline,
+                        obscureText: true,
                       ),
-                      SizedBox(height: 20),
+                      const SizedBox(height: 20),
+
+                      // === Sign Up Button ===
                       Center(
-                        child: Container(
-                          height: 60,
-                          width: 200,
-                          decoration: BoxDecoration(
-                            color: Color(0xffef2b39),
-                            borderRadius: BorderRadius.circular(30),
-                          ),
-                          child: Center(
-                            child: Text(
-                              "Sign Up",
-                              style: AppWidget.boldwhiteTextFieldStyle(),
+                        child: GestureDetector(
+                          onTap: () async {
+                            if (nameController.text.isNotEmpty &&
+                                mailController.text.isNotEmpty &&
+                                passwordController.text.isNotEmpty) {
+                              setState(() => isLoading = true);
+                              await registration();
+                              setState(() => isLoading = false);
+                            }
+                          },
+                          child: Container(
+                            height: 60,
+                            width: 200,
+                            decoration: BoxDecoration(
+                              color: const Color(0xffef2b39),
+                              borderRadius: BorderRadius.circular(30),
+                            ),
+                            child: Center(
+                              child: isLoading
+                                  ? const CircularProgressIndicator(
+                                      color: Colors.white,
+                                    )
+                                  : Text(
+                                      "Sign Up",
+                                      style:
+                                          AppWidget.boldwhiteTextFieldStyle(),
+                                    ),
                             ),
                           ),
                         ),
                       ),
-                      SizedBox(height: 30),
+
+                      const SizedBox(height: 30),
+
+                      // === Login Redirect ===
                       Row(
                         mainAxisAlignment: MainAxisAlignment.center,
                         children: [
@@ -145,18 +236,18 @@ class _SignUpState extends State<SignUp> {
                             "Already have an account?",
                             style: AppWidget.SimpleTextFieldStyle(),
                           ),
-                          SizedBox(width: 10),
+                          const SizedBox(width: 10),
                           GestureDetector(
                             onTap: () {
                               Navigator.push(
                                 context,
                                 MaterialPageRoute(
-                                  builder: (context) => LogIn(),
+                                  builder: (context) => const LogIn(),
                                 ),
                               );
                             },
                             child: Text(
-                              "LogIn",
+                              "Log In",
                               style: AppWidget.boldTextFieldStyle(),
                             ),
                           ),
@@ -171,5 +262,38 @@ class _SignUpState extends State<SignUp> {
         ),
       ),
     );
+  }
+
+  // === Custom TextField Builder ===
+  Widget _buildTextField({
+    required TextEditingController controller,
+    required String hint,
+    required IconData icon,
+    bool obscureText = false,
+  }) {
+    return Container(
+      decoration: BoxDecoration(
+        color: const Color(0xFFececf8),
+        borderRadius: BorderRadius.circular(10),
+      ),
+      child: TextField(
+        controller: controller,
+        obscureText: obscureText,
+        decoration: InputDecoration(
+          border: InputBorder.none,
+          hintText: hint,
+          prefixIcon: Icon(icon),
+        ),
+      ),
+    );
+  }
+
+  // === Dispose controllers to free memory ===
+  @override
+  void dispose() {
+    nameController.dispose();
+    mailController.dispose();
+    passwordController.dispose();
+    super.dispose();
   }
 }
