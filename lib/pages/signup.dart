@@ -1,5 +1,6 @@
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
+import 'package:foodgo/pages/bottomnav.dart';
 import 'package:foodgo/service/database.dart';
 import 'package:foodgo/service/shared_pref.dart';
 import 'package:random_string/random_string.dart';
@@ -75,7 +76,7 @@ class _SignUpState extends State<SignUp> {
       // Navigate to login screen
       Navigator.pushReplacement(
         context,
-        MaterialPageRoute(builder: (context) => const LogIn()),
+        MaterialPageRoute(builder: (context) => const BottomNav()),
       );
     } on FirebaseAuthException catch (e) {
       String errorMessage = "An error occurred. Please try again.";
@@ -149,111 +150,116 @@ class _SignUpState extends State<SignUp> {
                     borderRadius: BorderRadius.circular(20),
                   ),
                   height: MediaQuery.of(context).size.height / 1.65,
-                  child: Column(
-                    crossAxisAlignment: CrossAxisAlignment.start,
-                    children: [
-                      const SizedBox(height: 20),
-                      Center(
-                        child: Text(
-                          "Sign Up",
-                          style: AppWidget.HeadLineTextFieldStyle(),
-                        ),
-                      ),
-                      const SizedBox(height: 30),
-
-                      // === Name Field ===
-                      Text("Name", style: AppWidget.SignUpTextFieldStyle()),
-                      const SizedBox(height: 5),
-                      _buildTextField(
-                        controller: nameController,
-                        hint: "Enter Name",
-                        icon: Icons.person_outline,
-                      ),
-                      const SizedBox(height: 20),
-
-                      // === Email Field ===
-                      Text("Email", style: AppWidget.SignUpTextFieldStyle()),
-                      const SizedBox(height: 5),
-                      _buildTextField(
-                        controller: mailController,
-                        hint: "Enter Email",
-                        icon: Icons.mail_outline,
-                      ),
-                      const SizedBox(height: 20),
-
-                      // === Password Field ===
-                      Text("Password", style: AppWidget.priceTextFieldStyle()),
-                      const SizedBox(height: 5),
-                      _buildTextField(
-                        controller: passwordController,
-                        hint: "Enter Password",
-                        icon: Icons.lock_outline,
-                        obscureText: true,
-                      ),
-                      const SizedBox(height: 20),
-
-                      // === Sign Up Button ===
-                      Center(
-                        child: GestureDetector(
-                          onTap: () async {
-                            if (nameController.text.isNotEmpty &&
-                                mailController.text.isNotEmpty &&
-                                passwordController.text.isNotEmpty) {
-                              setState(() => isLoading = true);
-                              await registration();
-                              setState(() => isLoading = false);
-                            }
-                          },
-                          child: Container(
-                            height: 60,
-                            width: 200,
-                            decoration: BoxDecoration(
-                              color: const Color(0xffef2b39),
-                              borderRadius: BorderRadius.circular(30),
-                            ),
-                            child: Center(
-                              child: isLoading
-                                  ? const CircularProgressIndicator(
-                                      color: Colors.white,
-                                    )
-                                  : Text(
-                                      "Sign Up",
-                                      style:
-                                          AppWidget.boldwhiteTextFieldStyle(),
-                                    ),
-                            ),
+                  child: SingleChildScrollView(
+                    child: Column(
+                      crossAxisAlignment: CrossAxisAlignment.start,
+                      children: [
+                        const SizedBox(height: 20),
+                        Center(
+                          child: Text(
+                            "Sign Up",
+                            style: AppWidget.HeadLineTextFieldStyle(),
                           ),
                         ),
-                      ),
+                        const SizedBox(height: 30),
 
-                      const SizedBox(height: 30),
+                        // === Name Field ===
+                        Text("Name", style: AppWidget.SignUpTextFieldStyle()),
+                        const SizedBox(height: 5),
+                        _buildTextField(
+                          controller: nameController,
+                          hint: "Enter Name",
+                          icon: Icons.person_outline,
+                        ),
+                        const SizedBox(height: 20),
 
-                      // === Login Redirect ===
-                      Row(
-                        mainAxisAlignment: MainAxisAlignment.center,
-                        children: [
-                          Text(
-                            "Already have an account?",
-                            style: AppWidget.SimpleTextFieldStyle(),
-                          ),
-                          const SizedBox(width: 10),
-                          GestureDetector(
-                            onTap: () {
-                              Navigator.push(
-                                context,
-                                MaterialPageRoute(
-                                  builder: (context) => const LogIn(),
-                                ),
-                              );
+                        // === Email Field ===
+                        Text("Email", style: AppWidget.SignUpTextFieldStyle()),
+                        const SizedBox(height: 5),
+                        _buildTextField(
+                          controller: mailController,
+                          hint: "Enter Email",
+                          icon: Icons.mail_outline,
+                        ),
+                        const SizedBox(height: 20),
+
+                        // === Password Field ===
+                        Text(
+                          "Password",
+                          style: AppWidget.priceTextFieldStyle(),
+                        ),
+                        const SizedBox(height: 5),
+                        _buildTextField(
+                          controller: passwordController,
+                          hint: "Enter Password",
+                          icon: Icons.lock_outline,
+                          obscureText: true,
+                        ),
+                        const SizedBox(height: 20),
+
+                        // === Sign Up Button ===
+                        Center(
+                          child: GestureDetector(
+                            onTap: () async {
+                              if (nameController.text.isNotEmpty &&
+                                  mailController.text.isNotEmpty &&
+                                  passwordController.text.isNotEmpty) {
+                                setState(() => isLoading = true);
+                                await registration();
+                                setState(() => isLoading = false);
+                              }
                             },
-                            child: Text(
-                              "Log In",
-                              style: AppWidget.boldTextFieldStyle(),
+                            child: Container(
+                              height: 60,
+                              width: 200,
+                              decoration: BoxDecoration(
+                                color: const Color(0xffef2b39),
+                                borderRadius: BorderRadius.circular(30),
+                              ),
+                              child: Center(
+                                child: isLoading
+                                    ? const CircularProgressIndicator(
+                                        color: Colors.white,
+                                      )
+                                    : Text(
+                                        "Sign Up",
+                                        style:
+                                            AppWidget.boldwhiteTextFieldStyle(),
+                                      ),
+                              ),
                             ),
                           ),
-                        ],
-                      ),
-                    ],
+                        ),
+
+                        const SizedBox(height: 30),
+
+                        // === Login Redirect ===
+                        Row(
+                          mainAxisAlignment: MainAxisAlignment.center,
+                          children: [
+                            Text(
+                              "Already have an account?",
+                              style: AppWidget.SimpleTextFieldStyle(),
+                            ),
+                            const SizedBox(width: 10),
+                            GestureDetector(
+                              onTap: () {
+                                Navigator.push(
+                                  context,
+                                  MaterialPageRoute(
+                                    builder: (context) => const LogIn(),
+                                  ),
+                                );
+                              },
+                              child: Text(
+                                "Log In",
+                                style: AppWidget.boldTextFieldStyle(),
+                              ),
+                            ),
+                          ],
+                        ),
+                      ],
+                    ),
                   ),
                 ),
               ),
