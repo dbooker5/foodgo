@@ -1,6 +1,7 @@
 import 'dart:convert';
 
 import 'package:flutter/material.dart';
+import 'package:flutter_dotenv/flutter_dotenv.dart';
 import 'package:flutter_stripe/flutter_stripe.dart';
 import 'package:foodgo/service/widget_support.dart';
 import 'package:http/http.dart' as http;
@@ -24,8 +25,7 @@ class _DetailPageState extends State<DetailPage> {
   late int totalprice;
   Map<String, dynamic>? paymentIntent;
 
-  final String secretKey =
-      'sk_test_XXXXXXXXXXXXXXXXXXXXXXXXXXXX'; // Replace with your Stripe secret key
+  final String secretKey = dotenv.env['STRIPE_SECRET_KEY']!;
 
   @override
   void initState() {
