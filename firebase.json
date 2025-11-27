@@ -1,0 +1,39 @@
+{
+  "flutter": {
+    "platforms": {
+      "android": {
+        "default": {
+          "projectId": "foodgo-89c03",
+          "appId": "1:848782138701:android:4b34354bc487b49c962b04",
+          "fileOutput": "android/app/google-services.json"
+        }
+      },
+      "dart": {
+        "lib/firebase_options.dart": {
+          "projectId": "foodgo-89c03",
+          "configurations": {
+            "android": "1:848782138701:android:4b34354bc487b49c962b04",
+            "ios": "1:848782138701:ios:449517cacf08c1e2962b04",
+            "macos": "1:848782138701:ios:6bcb0546e9a0310c962b04",
+            "web": "1:848782138701:web:6749ddabb6a129b6962b04",
+            "windows": "1:848782138701:web:c43aabea3879f51a962b04"
+          }
+        }
+      }
+    }
+  },
+  "functions": [
+    {
+      "source": "functions",
+      "codebase": "default",
+      "disallowLegacyRuntimeConfig": true,
+      "ignore": [
+        "node_modules",
+        ".git",
+        "firebase-debug.log",
+        "firebase-debug.*.log",
+        "*.local"
+      ]
+    }
+  ]
+}

@@ -3,8 +3,12 @@ import 'dart:convert';
 import 'package:flutter/material.dart';
 import 'package:flutter_dotenv/flutter_dotenv.dart';
 import 'package:flutter_stripe/flutter_stripe.dart';
+import 'package:foodgo/service/shared_pref.dart';
 import 'package:foodgo/service/widget_support.dart';
 import 'package:http/http.dart' as http;
+import 'package:random_string/random_string.dart';
+
+import '../service/database.dart';
 
 class DetailPage extends StatefulWidget {
   final String image, name, price;
@@ -21,15 +25,24 @@ class DetailPage extends StatefulWidget {
 }
 
 class _DetailPageState extends State<DetailPage> {
-  int quantity = 1;
-  late int totalprice;
   Map<String, dynamic>? paymentIntent;
+  String? name, id, email;
+  int quantity = 1, totalprice = 0;
+
+  Future<void> getthesharedpref() async {
+    name = await SharedPreferencesHelper().getUserName();
+    id = await SharedPreferencesHelper().getUserId();
+    email = await SharedPreferencesHelper().getUserEmail();
+    setState(() {});
+  }
 
   final String secretKey = dotenv.env['STRIPE_SECRET_KEY']!;
 
   @override
   void initState() {
     super.initState();
+    getthesharedpref();
+    Stripe.publishableKey = dotenv.env['STRIPE_PUBLISHABLE_KEY']!;
     totalprice = int.parse(widget.price);
   }
 
@@ -54,25 +67,49 @@ class _DetailPageState extends State<DetailPage> {
 
   Future<void> displayPaymentSheet() async {
     try {
-      await Stripe.instance.presentPaymentSheet();
-
-      // success dialog
-      if (mounted) {
-        showDialog(
-          context: context,
-          builder: (_) => const AlertDialog(
-            content: Row(
-              children: [
-                Icon(Icons.check_circle, color: Colors.green),
-                SizedBox(width: 10),
-                Text("Payment Successful!"),
-              ],
+      await Stripe.instance.presentPaymentSheet().then((value) async {
+        String orderId = randomAlphaNumeric(10);
+        Map<String, dynamic> userOrderMap = {
+          "Name": name,
+          "Id": id,
+          "Quantity": quantity.toString(),
+          "Price": totalprice.toString(),
+          "Email": email,
+          "FoodName": widget.name,
+          "FoodImage": widget.image,
+          "OrderId": orderId,
+          "Status": "Pending",
+        };
+        await DatabaseMethods().addUserOrderDetails(userOrderMap, id!, orderId);
+        await DatabaseMethods().addAdminOrderDetails(userOrderMap, orderId);
+        ScaffoldMessenger.of(context).showSnackBar(
+          const SnackBar(
+            backgroundColor: Colors.green,
+            content: Text(
+              "Order placed successfully!",
+              style: TextStyle(fontSize: 18),
             ),
           ),
         );
-      }
 
-      paymentIntent = null;
+        // success dialog
+        if (mounted) {
+          showDialog(
+            context: context,
+            builder: (_) => const AlertDialog(
+              content: Row(
+                children: [
+                  Icon(Icons.check_circle, color: Colors.green),
+                  SizedBox(width: 10),
+                  Text("Payment Successful!"),
+                ],
+              ),
+            ),
+          );
+        }
+
+        paymentIntent = null;
+      });
     } on StripeException catch (e) {
       debugPrint('Stripe error: $e');
       if (mounted) {
