@@ -1,5 +1,6 @@
 import 'dart:convert';
 
+import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_dotenv/flutter_dotenv.dart';
 import 'package:flutter_stripe/flutter_stripe.dart';
@@ -7,6 +8,7 @@ import 'package:foodgo/service/shared_pref.dart';
 import 'package:foodgo/service/widget_support.dart';
 import 'package:http/http.dart' as http;
 import 'package:random_string/random_string.dart';
+import 'package:url_launcher/url_launcher.dart';
 
 import '../service/database.dart';
 
@@ -29,14 +31,16 @@ class _DetailPageState extends State<DetailPage> {
   String? name, id, email;
   int quantity = 1, totalprice = 0;
 
+  final String secretKey = dotenv.env['STRIPE_SECRET_KEY']!;
+  final String checkoutLink =
+      "https://buy.stripe.com/test_bJebJ22zs6261uycI74ow00";
+
   Future<void> getthesharedpref() async {
     name = await SharedPreferencesHelper().getUserName();
     id = await SharedPreferencesHelper().getUserId();
     email = await SharedPreferencesHelper().getUserEmail();
     setState(() {});
   }
-
-  final String secretKey = dotenv.env['STRIPE_SECRET_KEY']!;
 
   @override
   void initState() {
@@ -46,7 +50,22 @@ class _DetailPageState extends State<DetailPage> {
     totalprice = int.parse(widget.price);
   }
 
-  /// ===== Stripe Payment Logic =====
+  // ==========================================================
+  //   OPTION: WEB / WINDOWS → STRIPE CHECKOUT URL
+  // ==========================================================
+  Future<void> openStripeCheckoutUrl() async {
+    final uri = Uri.parse(checkoutLink);
+
+    if (await canLaunchUrl(uri)) {
+      await launchUrl(uri, mode: LaunchMode.externalApplication);
+    } else {
+      debugPrint("https://buy.stripe.com/test_bJebJ22zs6261uycI74ow00");
+    }
+  }
+
+  // ==========================================================
+  //   OPTION: ANDROID / iOS → STRIPE PAYMENT SHEET
+  // ==========================================================
   Future<void> makePayment(String amount) async {
     try {
       paymentIntent = await createPaymentIntent(amount, 'USD');
@@ -61,7 +80,7 @@ class _DetailPageState extends State<DetailPage> {
 
       await displayPaymentSheet();
     } catch (e, s) {
-      debugPrint('Exception: $e$s');
+      debugPrint('Stripe exception: $e | $s');
     }
   }
 
@@ -69,6 +88,7 @@ class _DetailPageState extends State<DetailPage> {
     try {
       await Stripe.instance.presentPaymentSheet().then((value) async {
         String orderId = randomAlphaNumeric(10);
+
         Map<String, dynamic> userOrderMap = {
           "Name": name,
           "Id": id,
@@ -80,19 +100,22 @@ class _DetailPageState extends State<DetailPage> {
           "OrderId": orderId,
           "Status": "Pending",
         };
+
         await DatabaseMethods().addUserOrderDetails(userOrderMap, id!, orderId);
         await DatabaseMethods().addAdminOrderDetails(userOrderMap, orderId);
-        ScaffoldMessenger.of(context).showSnackBar(
-          const SnackBar(
-            backgroundColor: Colors.green,
-            content: Text(
-              "Order placed successfully!",
-              style: TextStyle(fontSize: 18),
-            ),
-          ),
-        );
 
-        // success dialog
+        if (mounted) {
+          ScaffoldMessenger.of(context).showSnackBar(
+            const SnackBar(
+              backgroundColor: Colors.green,
+              content: Text(
+                "Order placed successfully!",
+                style: TextStyle(fontSize: 18),
+              ),
+            ),
+          );
+        }
+
         if (mounted) {
           showDialog(
             context: context,
@@ -110,16 +133,8 @@ class _DetailPageState extends State<DetailPage> {
 
         paymentIntent = null;
       });
-    } on StripeException catch (e) {
-      debugPrint('Stripe error: $e');
-      if (mounted) {
-        showDialog(
-          context: context,
-          builder: (_) => const AlertDialog(content: Text("Payment cancelled")),
-        );
-      }
     } catch (e) {
-      debugPrint('General error: $e');
+      debugPrint("Payment error: $e");
     }
   }
 
@@ -145,17 +160,18 @@ class _DetailPageState extends State<DetailPage> {
 
       return jsonDecode(response.body);
     } catch (err) {
-      debugPrint('Error charging user: ${err.toString()}');
+      debugPrint('Error creating payment intent: ${err.toString()}');
       rethrow;
     }
   }
 
   String calculateAmount(String amount) {
-    final calculatedAmount = (int.parse(amount) * 100).toString();
-    return calculatedAmount;
+    return (int.parse(amount) * 100).toString();
   }
 
-  /// ===== UI =====
+  // ==========================================================
+  //   BUILD UI
+  // ==========================================================
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -165,7 +181,7 @@ class _DetailPageState extends State<DetailPage> {
           child: Column(
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
-              // === Back Button ===
+              // Back Button
               GestureDetector(
                 onTap: () => Navigator.pop(context),
                 child: Container(
@@ -183,7 +199,7 @@ class _DetailPageState extends State<DetailPage> {
               ),
               const SizedBox(height: 10),
 
-              // === Image ===
+              // Image
               Center(
                 child: Image.asset(
                   widget.image,
@@ -193,28 +209,27 @@ class _DetailPageState extends State<DetailPage> {
               ),
               const SizedBox(height: 20),
 
-              // === Name and Price ===
+              // Name, Price
               Text(widget.name, style: AppWidget.HeadLineTextFieldStyle()),
               Text("\$${widget.price}", style: AppWidget.priceTextFieldStyle()),
 
               const SizedBox(height: 30),
 
-              // === Description ===
+              // Description
               Padding(
                 padding: const EdgeInsets.only(right: 10),
                 child: Text(
-                  "Cheese pizza features a crispy crust topped with tangy tomato sauce and melted mozzarella cheese. Simple, comforting, and delicious — it’s the classic favorite loved by all ages.",
+                  "Cheese pizza features a crispy crust topped with tangy tomato sauce and melted mozzarella cheese.",
                   style: AppWidget.SimpleTextFieldStyle(),
                 ),
               ),
               const SizedBox(height: 30),
 
-              // === Quantity Controls ===
+              // Quantity Controls
               Text("Quantity", style: AppWidget.SimpleTextFieldStyle()),
               const SizedBox(height: 10),
               Row(
                 children: [
-                  // Add Button
                   GestureDetector(
                     onTap: () {
                       setState(() {
@@ -240,12 +255,8 @@ class _DetailPageState extends State<DetailPage> {
                     ),
                   ),
                   const SizedBox(width: 20),
-
-                  // Quantity Display
                   AnimatedSwitcher(
                     duration: const Duration(milliseconds: 200),
-                    transitionBuilder: (child, anim) =>
-                        ScaleTransition(scale: anim, child: child),
                     child: Text(
                       quantity.toString(),
                       key: ValueKey<int>(quantity),
@@ -253,8 +264,6 @@ class _DetailPageState extends State<DetailPage> {
                     ),
                   ),
                   const SizedBox(width: 20),
-
-                  // Remove Button
                   GestureDetector(
                     onTap: () {
                       if (quantity > 1) {
@@ -286,11 +295,10 @@ class _DetailPageState extends State<DetailPage> {
 
               const SizedBox(height: 40),
 
-              // === Total & Order Button ===
+              // Total Price + Order Button
               Row(
                 mainAxisAlignment: MainAxisAlignment.center,
                 children: [
-                  // Total Price
                   Material(
                     elevation: 3.0,
                     borderRadius: BorderRadius.circular(20),
@@ -302,23 +310,26 @@ class _DetailPageState extends State<DetailPage> {
                         borderRadius: BorderRadius.circular(20),
                       ),
                       child: Center(
-                        child: AnimatedSwitcher(
-                          duration: const Duration(milliseconds: 200),
-                          child: Text(
-                            "\$${totalprice.toString()}",
-                            key: ValueKey<int>(totalprice),
-                            style: AppWidget.boldwhiteTextFieldStyle(),
-                          ),
+                        child: Text(
+                          "\$${totalprice.toString()}",
+                          style: AppWidget.boldwhiteTextFieldStyle(),
                         ),
                       ),
                     ),
                   ),
                   const SizedBox(width: 30),
 
-                  // Order Button
+                  // ORDER BUTTON (Platform Adaptive)
                   GestureDetector(
                     onTap: () async {
-                      await makePayment(totalprice.toString());
+                      if (kIsWeb ||
+                          defaultTargetPlatform == TargetPlatform.windows) {
+                        openStripeCheckoutUrl(); // → Web/Windows
+                      } else {
+                        await makePayment(
+                          totalprice.toString(),
+                        ); // → Android/iOS
+                      }
                     },
                     child: Material(
                       elevation: 3.0,
